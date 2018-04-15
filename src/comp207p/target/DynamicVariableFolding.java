@@ -23,7 +23,7 @@ public class DynamicVariableFolding {
         j = i + 5;
         return i * j;
     }
-    
+
     public int methodFour(){
         int a = 534245;
         int b = a - 1234;

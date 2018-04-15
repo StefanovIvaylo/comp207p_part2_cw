@@ -184,42 +184,59 @@ public class ConstantFolder
 		int counter = 0;
 
 		String regexp = "ILOAD | DLOAD | FLOAD | LLOAD";
-		InstructionHandle next = null;
 
 		for (Iterator i = f.search(regexp); i.hasNext();){
-			InstructionHandle[] match = (InstructionHandle[]) i.next();
-
 			System.out.println("we have a load instruction");
+			InstructionHandle[] match = (InstructionHandle[]) i.next();
+			System.out.print(match[0].getInstruction());
+			//System.out.println("we have a load instruction");
 			LoadInstruction load = (LoadInstruction)match[0].getInstruction();
-			Number loadedNumber = null;
+			System.out.println("##############" + load + "##########");
 			Instruction replace = null;
-			Number loadIndex = load.getIndex();
-			System.out.println("index: " + load.getIndex());
+			//System.out.println("index: " + load.getIndex());
 
 			InstructionHandle l = match[0].getPrev();
-
+			InstructionHandle deletedStore = null;
 			while (l != null){
 				Instruction instruction = l.getInstruction();
 
 				if(instruction instanceof StoreInstruction){
 					int matchingIndex = ((StoreInstruction) instruction).getIndex();
-					System.out.println("we got here, matching index: " + matchingIndex);
-					System.out.println(l.getPrev());
+					deletedStore = l;
+					//System.out.println("we got here, matching index: " + matchingIndex);
+					//System.out.println(l.getPrev());
 
 					if ((load.getIndex() == matchingIndex) && l.getPrev().getInstruction() instanceof PushInstruction){
-						loadedNumber = getVal((PushInstruction)l.getPrev().getInstruction(), cpgen, match);
 						replace = l.getPrev().getInstruction();
-						System.out.println("loadedNumber");
 					}
 				}
 				l = l.getPrev();
 			}
 			if (replace != null) {
+				InstructionHandle k = match[0].getNext();
+				int index = ((LoadInstruction) match[0].getInstruction()).getIndex();
 				match[0].setInstruction(replace);
+				while (k !=null){
+					if(k.getInstruction() instanceof StoreInstruction){
+						if (((StoreInstruction) k.getInstruction()).getIndex() == index) {
+							break;
+						}
+					}
+					else if(k.getInstruction() instanceof LoadInstruction){
+						if(((LoadInstruction) k.getInstruction()).getIndex() == index){
+							k.setInstruction(replace);
+						}
+					}
+					else if (k.getInstruction() instanceof PushInstruction){
+						System.out.println("we have a push");
+					}
+					System.out.println("---------" + k.getInstruction() + "-----------");
+				k = k.getNext();
+				}
+				System.out.println("end of instructions");
 			}
 		}
-
-		return counter;
+	return counter;
 	}
 
 

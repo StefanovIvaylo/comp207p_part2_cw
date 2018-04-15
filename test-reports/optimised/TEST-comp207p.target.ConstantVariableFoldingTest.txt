@@ -1,7 +1,167 @@
 Testsuite: comp207p.target.ConstantVariableFoldingTest
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+Tests run: 4, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.024 sec
 
-Testcase: testMethodThree took 0 sec
+Testcase: testMethodThree took 0.002 sec
+	Caused an ERROR
+StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+java.lang.VerifyError: StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+	at comp207p.target.ConstantVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
 Testcase: testMethodFour took 0 sec
+	Caused an ERROR
+StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+java.lang.VerifyError: StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+	at comp207p.target.ConstantVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
 Testcase: testMethodOne took 0 sec
+	Caused an ERROR
+StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+java.lang.VerifyError: StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+	at comp207p.target.ConstantVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
 Testcase: testMethodTwo took 0 sec
+	Caused an ERROR
+StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+java.lang.VerifyError: StackMapTable error: bad offset
+Exception Details:
+  Location:
+    comp207p/target/ConstantVariableFolding.methodThree()Z @0: sipush
+  Reason:
+    Invalid stackmap specification.
+  Current Frame:
+    bci: @17
+    flags: { }
+    locals: { 'comp207p/target/ConstantVariableFolding', integer, integer }
+    stack: { integer }
+  Bytecode:
+    0x0000000: 1130 393c 1204 3d11 3039 1204 a400 0704
+    0x0000010: a700 0403 ac                           
+  Stackmap Table:
+    append_frame(@16,Integer,Integer)
+    same_locals_1_stack_item_frame(@17,Integer)
+
+	at comp207p.target.ConstantVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
