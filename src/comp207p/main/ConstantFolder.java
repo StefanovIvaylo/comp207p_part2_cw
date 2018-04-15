@@ -79,9 +79,7 @@ public class ConstantFolder
 			propogation(mg, il);
 		}
 
-//			for(int i = 0; i < 1; i++) {
-//			propogation(mg, il);
-//			}
+
 
 
 //			The following while loop is appropriate for when we have all the functions
@@ -194,7 +192,9 @@ public class ConstantFolder
 			System.out.println("we have a load instruction");
 			LoadInstruction load = (LoadInstruction)match[0].getInstruction();
 			Number loadedNumber = null;
-			System.out.println(load.getIndex());
+			Instruction replace = null;
+			Number loadIndex = load.getIndex();
+			System.out.println("index: " + load.getIndex());
 
 			InstructionHandle l = match[0].getPrev();
 
@@ -203,20 +203,20 @@ public class ConstantFolder
 
 				if(instruction instanceof StoreInstruction){
 					int matchingIndex = ((StoreInstruction) instruction).getIndex();
-					System.out.println("we got here");
+					System.out.println("we got here, matching index: " + matchingIndex);
 					System.out.println(l.getPrev());
 
-					if (load.getIndex() == matchingIndex && l.getPrev().getInstruction() instanceof PushInstruction){
+					if ((load.getIndex() == matchingIndex) && l.getPrev().getInstruction() instanceof PushInstruction){
 						loadedNumber = getVal((PushInstruction)l.getPrev().getInstruction(), cpgen, match);
+						replace = l.getPrev().getInstruction();
 						System.out.println("loadedNumber");
 					}
 				}
 				l = l.getPrev();
 			}
-
-
-			Instruction fold = new LDC(cpgen.addInteger(loadedNumber.intValue()));
-			match[0].setInstruction(fold);
+			if (replace != null) {
+				match[0].setInstruction(replace);
+			}
 		}
 
 		return counter;
@@ -238,32 +238,32 @@ public class ConstantFolder
 		else if(inst instanceof ConstantPushInstruction) {
 			n = (Number) ((ConstantPushInstruction) inst).getValue();
 		}
-		else if(inst instanceof LoadInstruction) {
-
-			InstructionHandle ih = match[0];
-			int index = ((LoadInstruction) inst).getIndex();
-			InstructionHandle i = match[0].getPrev();
-
-			while (i != null ) {
-				Instruction instruction = i.getInstruction();
-
-				if(instruction instanceof StoreInstruction) {
-					int currIndex = ((StoreInstruction) instruction).getIndex();
-
-
-					if(index == currIndex && i.getPrev().getInstruction() instanceof PushInstruction) {
-
-						match[0].setInstruction(i.getPrev().getInstruction());
-
-						getVal((PushInstruction)match[0].getInstruction(), cpgen, match);
-
-						break;
-					}
-				}
-
-				i = i.getPrev();
-			}
-		}
+//		else if(inst instanceof LoadInstruction) {
+//
+//			InstructionHandle ih = match[0];
+//			int index = ((LoadInstruction) inst).getIndex();
+//			InstructionHandle i = match[0].getPrev();
+//
+//			while (i != null ) {
+//				Instruction instruction = i.getInstruction();
+//
+//				if(instruction instanceof StoreInstruction) {
+//					int currIndex = ((StoreInstruction) instruction).getIndex();
+//
+//
+//					if(index == currIndex && i.getPrev().getInstruction() instanceof PushInstruction) {
+//
+//						match[0].setInstruction(i.getPrev().getInstruction());
+//
+//						getVal((PushInstruction)match[0].getInstruction(), cpgen, match);
+//
+//						break;
+//					}
+//				}
+//
+//				i = i.getPrev();
+//			}
+//		}
 
 		return n;
 	}
