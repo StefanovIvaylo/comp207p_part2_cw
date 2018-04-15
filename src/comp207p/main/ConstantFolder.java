@@ -58,7 +58,7 @@ public class ConstantFolder
 			mg = new MethodGen(method, cgen.getClassName(), cpgen);
 
 			System.out.println(cgen.getClassName() + " > " + method.getName() + " OPTIMISED!!!!");
-			System.out.println("Instruction list : " + mg.getInstructionList());
+			System.out.println(mg.getInstructionList());
 		}
 
 
@@ -74,9 +74,8 @@ public class ConstantFolder
 
 
 
-		for(int i = 0; i < 30; i++) {
+		for(int i = 0; i < 3; i++) {
 			simpleFolding(mg, il);
-			propogation(mg, il);
 		}
 
 
@@ -124,6 +123,8 @@ public class ConstantFolder
 				PushInstruction l = (PushInstruction)match[0].getInstruction();
 				PushInstruction r = (PushInstruction)match[1].getInstruction();
 				Instruction op = match[2].getInstruction();
+				
+				System.out.println(l + ", " +  r + ", " + op);
 
 
 				Number ln = getVal(l, cpgen, match);
@@ -177,50 +178,50 @@ public class ConstantFolder
 		return counter;
 	}
 
-	private int propogation(MethodGen mg, InstructionList il){
-		ConstantPoolGen cpgen = mg.getConstantPool();
-		InstructionFinder f = new InstructionFinder(il);
-
-		int counter = 0;
-
-		String regexp = "ILOAD | DLOAD | FLOAD | LLOAD";
-		InstructionHandle next = null;
-
-		for (Iterator i = f.search(regexp); i.hasNext();){
-			InstructionHandle[] match = (InstructionHandle[]) i.next();
-
-			System.out.println("we have a load instruction");
-			LoadInstruction load = (LoadInstruction)match[0].getInstruction();
-			Number loadedNumber = null;
-			Instruction replace = null;
-			Number loadIndex = load.getIndex();
-			System.out.println("index: " + load.getIndex());
-
-			InstructionHandle l = match[0].getPrev();
-
-			while (l != null){
-				Instruction instruction = l.getInstruction();
-
-				if(instruction instanceof StoreInstruction){
-					int matchingIndex = ((StoreInstruction) instruction).getIndex();
-					System.out.println("we got here, matching index: " + matchingIndex);
-					System.out.println(l.getPrev());
-
-					if ((load.getIndex() == matchingIndex) && l.getPrev().getInstruction() instanceof PushInstruction){
-						loadedNumber = getVal((PushInstruction)l.getPrev().getInstruction(), cpgen, match);
-						replace = l.getPrev().getInstruction();
-						System.out.println("loadedNumber");
-					}
-				}
-				l = l.getPrev();
-			}
-			if (replace != null) {
-				match[0].setInstruction(replace);
-			}
-		}
-
-		return counter;
-	}
+//	private int propogation(MethodGen mg, InstructionList il){
+//		ConstantPoolGen cpgen = mg.getConstantPool();
+//		InstructionFinder f = new InstructionFinder(il);
+//
+//		int counter = 0;
+//
+//		String regexp = "ILOAD | DLOAD | FLOAD | LLOAD";
+//		InstructionHandle next = null;
+//
+//		for (Iterator i = f.search(regexp); i.hasNext();){
+//			InstructionHandle[] match = (InstructionHandle[]) i.next();
+//
+//			System.out.println("we have a load instruction");
+//			LoadInstruction load = (LoadInstruction)match[0].getInstruction();
+//			Number loadedNumber = null;
+//			Instruction replace = null;
+//			Number loadIndex = load.getIndex();
+//			System.out.println("index: " + load.getIndex());
+//
+//			InstructionHandle l = match[0].getPrev();
+//
+//			while (l != null){
+//				Instruction instruction = l.getInstruction();
+//
+//				if(instruction instanceof StoreInstruction){
+//					int matchingIndex = ((StoreInstruction) instruction).getIndex();
+//					System.out.println("we got here, matching index: " + matchingIndex);
+//					System.out.println(l.getPrev());
+//
+//					if ((load.getIndex() == matchingIndex) && l.getPrev().getInstruction() instanceof PushInstruction){
+//						loadedNumber = getVal((PushInstruction)l.getPrev().getInstruction(), cpgen, match);
+//						replace = l.getPrev().getInstruction();
+//						System.out.println("loadedNumber");
+//					}
+//				}
+//				l = l.getPrev();
+//			}
+//			if (replace != null) {
+//				match[0].setInstruction(replace);
+//			}
+//		}
+//
+//		return counter;
+//	}
 
 
 	private Number getVal(PushInstruction inst, ConstantPoolGen cpgen, InstructionHandle[] match) {
@@ -238,32 +239,19 @@ public class ConstantFolder
 		else if(inst instanceof ConstantPushInstruction) {
 			n = (Number) ((ConstantPushInstruction) inst).getValue();
 		}
-//		else if(inst instanceof LoadInstruction) {
-//
-//			InstructionHandle ih = match[0];
-//			int index = ((LoadInstruction) inst).getIndex();
-//			InstructionHandle i = match[0].getPrev();
-//
-//			while (i != null ) {
-//				Instruction instruction = i.getInstruction();
-//
-//				if(instruction instanceof StoreInstruction) {
-//					int currIndex = ((StoreInstruction) instruction).getIndex();
-//
-//
-//					if(index == currIndex && i.getPrev().getInstruction() instanceof PushInstruction) {
-//
-//						match[0].setInstruction(i.getPrev().getInstruction());
-//
-//						getVal((PushInstruction)match[0].getInstruction(), cpgen, match);
-//
-//						break;
-//					}
-//				}
-//
-//				i = i.getPrev();
-//			}
-//		}
+		else if(inst instanceof LoadInstruction) {
+			int requiredIndex = ((LoadInstruction) inst).getIndex();
+			InstructionHandle l = match[0].getPrev();
+			while(l != null) {
+				if(l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
+					if(l.getPrev().getInstruction() instanceof PushInstruction) {
+						n = getVal((PushInstruction) l.getPrev().getInstruction(), cpgen, match);
+						return n;
+					}	
+				}
+			l = l.getPrev();
+			}
+		}
 
 		return n;
 	}
