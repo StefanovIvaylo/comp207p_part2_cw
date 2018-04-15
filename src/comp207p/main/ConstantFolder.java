@@ -76,6 +76,7 @@ public class ConstantFolder
 
 		for(int i = 0; i < 3; i++) {
 			simpleFolding(mg, il);
+			propagation(mg, il);
 		}
 
 
@@ -239,19 +240,19 @@ public class ConstantFolder
 		else if(inst instanceof ConstantPushInstruction) {
 			n = (Number) ((ConstantPushInstruction) inst).getValue();
 		}
-		else if(inst instanceof LoadInstruction) {
-			int requiredIndex = ((LoadInstruction) inst).getIndex();
-			InstructionHandle l = match[0].getPrev();
-			while(l != null) {
-				if(l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
-					if(l.getPrev().getInstruction() instanceof PushInstruction) {
-						n = getVal((PushInstruction) l.getPrev().getInstruction(), cpgen, match);
-						return n;
-					}	
-				}
-			l = l.getPrev();
-			}
-		}
+//		else if(inst instanceof LoadInstruction) {
+//			int requiredIndex = ((LoadInstruction) inst).getIndex();
+//			InstructionHandle l = match[0].getPrev();
+//			while(l != null) {
+//				if(l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
+//					if(l.getPrev().getInstruction() instanceof PushInstruction) {
+//						n = getVal((PushInstruction) l.getPrev().getInstruction(), cpgen, match);
+//						return n;
+//					}
+//				}
+//			l = l.getPrev();
+//			}
+//		}
 
 		return n;
 	}
