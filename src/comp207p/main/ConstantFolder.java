@@ -55,7 +55,7 @@ public class ConstantFolder {
         }
 
 
-        this.optimized = gen.getJavaClass();
+        this.optimized = cgen.getJavaClass();
     }
 
     private Method improveMethod(Method method, ClassGen cgen, ConstantPoolGen cpgen) {
@@ -229,7 +229,6 @@ public class ConstantFolder {
 
         //EOF
         storeToLoadsMap.forEach((index, loadsInfo) -> {
-            System.out.println("for store" + index + " propogate " + loadsInfo.correspondingLoads.size() + " loads");
             propagateStoreToLoads(loadsInfo, instructionList);
         });
 
