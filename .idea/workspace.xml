@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5d548237-e51a-45f8-bca3-a5e294831987" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/build/classes/comp207p/main/ConstantFolder$LoadsInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/main/ConstantFolder$LoadsInfo.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test-reports/original/TEST-comp207p.target.SimpleFoldingTest.txt" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.ConstantVariableFoldingTest.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.DynamicVariableFoldingTest.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/comp207p/main/ConstantFolder.class" afterPath="$PROJECT_DIR$/bin/comp207p/main/ConstantFolder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/comp207p/main/ConstantFolder.class" afterPath="$PROJECT_DIR$/build/classes/comp207p/main/ConstantFolder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/SimpleFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/SimpleFolding.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/.gitignore" afterPath="$PROJECT_DIR$/bin/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java" afterPath="$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-reports/original/TEST-comp207p.target.ConstantVariableFoldingTest.txt" afterPath="$PROJECT_DIR$/test-reports/original/TEST-comp207p.target.ConstantVariableFoldingTest.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-reports/original/TEST-comp207p.target.DynamicVariableFoldingTest.txt" afterPath="$PROJECT_DIR$/test-reports/original/TEST-comp207p.target.DynamicVariableFoldingTest.txt" />
-    </list>
+    <list default="true" id="5d548237-e51a-45f8-bca3-a5e294831987" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -438,7 +422,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35638000" />
+    <option name="totallyTimeSpent" value="35984000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
