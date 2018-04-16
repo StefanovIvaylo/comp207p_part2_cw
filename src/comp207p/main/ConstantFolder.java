@@ -40,8 +40,6 @@ public class ConstantFolder {
         cgen.setMajor(49);
         ConstantPoolGen cpgen = cgen.getConstantPool();
 
-
-
         Method[] methods = cgen.getMethods();
         for (Method method : methods) {
 
@@ -64,42 +62,17 @@ public class ConstantFolder {
         Code methodCode = method.getCode();
         InstructionList instructionList = new InstructionList(methodCode.getCode());
 
-//        MethodGen methodGen = new MethodGen(method, cgen.getClassName(), cpgen);
-
-        //passing instruction list!!!
         MethodGen methodGen = new MethodGen(method.getAccessFlags(), method.getReturnType(), method.getArgumentTypes(),
                 null, method.getName(), cgen.getClassName(), instructionList, cpgen);
 
-        //We need too loop the following 3 (we might possibly need more) methods
-        //until there are no more changes to be done
-
 
         for (int i = 0; i < 1; i++) {
-            //simpleFolding(mg, il);
             propagation(instructionList);
-//            deleteTest(il);
         }
-
-
-//			The following while loop is appropriate for when we have all the functions
-
-//			int count = 1;
-//
-//			while(count > 0) {
-//				count = 0;
-//				count += simpleFolding(mg, il);
-//				System.out.println("------------- " + count);
-//				//count += propagation(mg,il);
-//				//count += dynamicFolding()
-//				//possibly more
-//			}
-
 
         instructionList.setPositions(true);
         methodGen.setMaxStack();
         methodGen.setMaxLocals();
-
-        //        instructionList.dispose();
 
         return methodGen.getMethod();
     }
@@ -200,7 +173,6 @@ public class ConstantFolder {
         try {
             instructionList.delete(loadsInfo.storeInstruction);
             instructionList.delete(loadsInfo.stored);
-////            instructionList.delete(loadsInfo.stored, loadsInfo.storeInstruction);
         } catch (TargetLostException e) {
             e.printStackTrace();
         }
@@ -230,7 +202,6 @@ public class ConstantFolder {
                 if (storeToLoadsMap.containsKey(index)) {
                     //replace all the loads
                     LoadsInfo loadsInfo = storeToLoadsMap.get(index);
-//                    System.out.println("for store" + index + " propogate " + loadsInfo.correspondingLoads.size() + " loads");
                     propagateStoreToLoads(loadsInfo, instructionList);
                 }
 
@@ -238,7 +209,6 @@ public class ConstantFolder {
                 InstructionHandle prevInstruction = instructionHandle.getPrev();
                 if (prevInstruction.getInstruction() instanceof PushInstruction) {
                     //add/replace
-//                    System.out.println("putting store" + index + " into the map with " + prevInstruction);
                     storeToLoadsMap.put(index, new LoadsInfo(instructionHandle, prevInstruction));
                 } else {
                     //delete
@@ -250,7 +220,6 @@ public class ConstantFolder {
 
                 if (storeToLoadsMap.containsKey(index)) {
                     LoadsInfo loadsInfo = storeToLoadsMap.get(index);
-//                    System.out.println("adding " + instruction + " to store" + index);
                     loadsInfo.addLoad(instructionHandle);
                 }
                 // else { can't be propagated yet}
@@ -260,22 +229,10 @@ public class ConstantFolder {
 
         //EOF
         storeToLoadsMap.forEach((index, loadsInfo) -> {
-//            InstructionHandle pushBeforeStore =
             System.out.println("for store" + index + " propogate " + loadsInfo.correspondingLoads.size() + " loads");
             propagateStoreToLoads(loadsInfo, instructionList);
-//            redundantPushes.add(pushBeforeStore);
         });
 
-        //System.out.println(redundantPushes.size() + "pushes to be deleted");
-//
-//        for(int i = 0; i < redundantPushes.size(); i++)
-//        {
-//            try {
-//                instructionList.delete(redundantPushes.get(i));
-//            } catch (TargetLostException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
     }
 
@@ -291,19 +248,6 @@ public class ConstantFolder {
         } else if (inst instanceof ConstantPushInstruction) {
             n = (Number) ((ConstantPushInstruction) inst).getValue();
         }
-//		else if(inst instanceof LoadInstruction) {
-//			int requiredIndex = ((LoadInstruction) inst).getIndex();
-//			InstructionHandle l = instructionHandle.getPrev();
-//			while(l != null) {
-//				if(l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
-//					if(l.getPrev().getInstruction() instanceof PushInstruction) {
-//						n = getVal((PushInstruction) l.getPrev().getInstruction(), cpgen);
-//						return n;
-//					}
-//				}
-//			l = l.getPrev();
-//			}
-//		}
 
         return n;
     }
