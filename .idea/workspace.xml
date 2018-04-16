@@ -4,13 +4,9 @@
     <list default="true" id="5d548237-e51a-45f8-bca3-a5e294831987" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/comp207p/main/ConstantFolder.class" afterPath="$PROJECT_DIR$/bin/comp207p/main/ConstantFolder.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/comp207p/main/ConstantFolder.class" afterPath="$PROJECT_DIR$/build/classes/comp207p/main/ConstantFolder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/optimised/classes/comp207p/target/SimpleFolding.class" afterPath="$PROJECT_DIR$/optimised/classes/comp207p/target/SimpleFolding.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java" afterPath="$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.ConstantVariableFoldingTest.txt" afterPath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.ConstantVariableFoldingTest.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.DynamicVariableFoldingTest.txt" afterPath="$PROJECT_DIR$/test-reports/optimised/TEST-comp207p.target.DynamicVariableFoldingTest.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java" afterPath="$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,14 +21,12 @@
       <file leaf-file-name="ConstantFolder.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="87" column="52" lean-forward="true" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
+            <state relative-caret-position="-235">
+              <caret line="313" column="0" lean-forward="true" selection-start-line="313" selection-start-column="0" selection-end-line="313" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#ConstantFolder#0;class#ConstantFolder#0" expanded="false" />
-                <element signature="method#simpleFolding#0;class#ConstantFolder#0" expanded="false" />
                 <element signature="e#6385#6446#0" expanded="false" />
-                <element signature="method#getVal#0;class#ConstantFolder#0" expanded="false" />
                 <element signature="method#conversionFold#0;class#ConstantFolder#0" expanded="false" />
                 <element signature="method#arithmeticFold#0;class#ConstantFolder#0" expanded="false" />
                 <element signature="method#branchFold#0;class#ConstantFolder#0" expanded="false" />
@@ -59,14 +53,14 @@
         <entry file="file://$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
-              <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
+              <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SimpleFolding.class" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/optimised/classes/comp207p/target/SimpleFolding.class">
+      <file leaf-file-name="SimpleFolding.j" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/comp207p/target/SimpleFolding.j">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -93,8 +87,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java" />
         <option value="$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java" />
+        <option value="$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java" />
       </list>
     </option>
   </component>
@@ -304,12 +298,12 @@
       <option name="presentableId" value="Default" />
       <updated>1523800947578</updated>
       <workItem from="1523800948992" duration="2402000" />
-      <workItem from="1523815729016" duration="11498000" />
+      <workItem from="1523815729016" duration="13607000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13900000" />
+    <option name="totallyTimeSpent" value="16009000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -351,7 +345,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -363,9 +357,7 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#ConstantFolder#0;class#ConstantFolder#0" expanded="false" />
-            <element signature="method#simpleFolding#0;class#ConstantFolder#0" expanded="false" />
             <element signature="e#6385#6446#0" expanded="false" />
-            <element signature="method#getVal#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#conversionFold#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#arithmeticFold#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#branchFold#0;class#ConstantFolder#0" expanded="false" />
@@ -401,10 +393,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/comp207p/target/SimpleFolding.j">
+    <entry file="file://$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="-7">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#938#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/comp207p/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-25">
+          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -412,6 +415,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/comp207p/target/SimpleFolding.j">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="24" column="13" lean-forward="true" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="18" lean-forward="true" selection-start-line="24" selection-start-column="18" selection-end-line="24" selection-end-column="18" />
           <folding />
         </state>
       </provider>
@@ -424,50 +451,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/comp207p/target/ConstantVariableFolding.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/optimised/classes/comp207p/target/DynamicVariableFolding.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#938#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/optimised/classes/comp207p/target/ConstantVariableFolding.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="24" column="13" lean-forward="true" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/comp207p/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-25">
-          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/comp207p/main/ConstantFolder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="87" column="52" lean-forward="true" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
+        <state relative-caret-position="-235">
+          <caret line="313" column="0" lean-forward="true" selection-start-line="313" selection-start-column="0" selection-end-line="313" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#ConstantFolder#0;class#ConstantFolder#0" expanded="false" />
-            <element signature="method#simpleFolding#0;class#ConstantFolder#0" expanded="false" />
             <element signature="e#6385#6446#0" expanded="false" />
-            <element signature="method#getVal#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#conversionFold#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#arithmeticFold#0;class#ConstantFolder#0" expanded="false" />
             <element signature="method#branchFold#0;class#ConstantFolder#0" expanded="false" />
