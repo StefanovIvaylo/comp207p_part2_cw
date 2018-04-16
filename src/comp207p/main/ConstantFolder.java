@@ -67,7 +67,14 @@ public class ConstantFolder {
 
 
         for (int i = 0; i < 1; i++) {
-            propagation(instructionList);
+        }
+
+        int count = 1;
+
+        while(count > 0) {
+            count = 0;
+            count += propagation(instructionList);
+            count += simpleFolding(methodGen, instructionList);
         }
 
         instructionList.setPositions(true);
@@ -77,27 +84,23 @@ public class ConstantFolder {
         return methodGen.getMethod();
     }
 
-
     private int simpleFolding(MethodGen mg, InstructionList il) {
         ConstantPoolGen cpgen = mg.getConstantPool();
         InstructionFinder f = new InstructionFinder(il);
 
         int counter = 0;
 
-        String regexp = "(PushInstruction ConversionInstruction) | (PushInstruction PushInstruction ArithmeticInstruction)";
+        String regexp = "(PushInstruction ConversionInstruction) | (PushInstruction PushInstruction ArithmeticInstruction) | (PushInstruction PushInstruction IfInstruction) | (PushInstruction PushInstruction LCMP) | (PushInstruction IfInstruction)";
 
-        for (Iterator i = f.search(regexp); i.hasNext(); ) {
+        for (Iterator i = f.search(regexp); i.hasNext();) {
 
             InstructionHandle[] match = (InstructionHandle[]) i.next();
 
 
-            if (match.length == 3) {
-                PushInstruction l = (PushInstruction) match[0].getInstruction();
-                PushInstruction r = (PushInstruction) match[1].getInstruction();
+            if(match.length == 3 && match[2].getInstruction() instanceof ArithmeticInstruction) {
+                PushInstruction l = (PushInstruction)match[0].getInstruction();
+                PushInstruction r = (PushInstruction)match[1].getInstruction();
                 Instruction op = match[2].getInstruction();
-
-                System.out.println(l + ", " + r + ", " + op);
-
 
                 Number ln = getVal(l, cpgen);
                 Number rn = getVal(r, cpgen);
@@ -112,21 +115,22 @@ public class ConstantFolder {
 
                 try {
                     il.delete(match[1], match[2]);
-                } catch (TargetLostException e) {
+                }
+                catch (TargetLostException e) {
                     e.printStackTrace();
                 }
 
-                counter += 1;
+                counter+=1;
+            }
+            else if(match.length == 2 && match[1].getInstruction() instanceof ConversionInstruction) {
 
-            } else if (match.length == 2) {
-
-                PushInstruction l = (PushInstruction) match[0].getInstruction();
-                ConversionInstruction op = (ConversionInstruction) match[1].getInstruction();
+                PushInstruction l = (PushInstruction)match[0].getInstruction();
+                ConversionInstruction op = (ConversionInstruction)match[1].getInstruction();
 
 
                 Number ln = getVal(l, cpgen);
 
-                if (ln == null) {
+                if(ln == null) {
                     continue;
                 }
 
@@ -135,17 +139,114 @@ public class ConstantFolder {
                 match[0].setInstruction(fold);
                 try {
                     il.delete(match[1]);
-                } catch (TargetLostException e) {
+                }
+                catch (TargetLostException e) {
                     e.printStackTrace();
+                }
+                counter+=1;
+            }
+            else if(match.length == 3 && match[2].getInstruction() instanceof IfInstruction){
+                PushInstruction l = (PushInstruction)match[0].getInstruction();
+                PushInstruction r = (PushInstruction)match[1].getInstruction();
+                Instruction branch = match[2].getInstruction();
+
+                Number ln = getVal(l, cpgen);
+                Number rn = getVal(r, cpgen);
+
+                if (ln == null || rn == null) {
+                    continue;
+                }
+
+                Instruction fold = branchFold(mg, ln, rn, branch);
+
+                if(fold instanceof BranchInstruction){
+                    match[2].setInstruction(fold);
+                    try{
+                        il.delete(match[0], match[1]);
+                    }
+                    catch (TargetLostException e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    match[0].setInstruction(fold);
+                    try {
+                        il.delete(match[1], match[2]);
+                    }
+                    catch (TargetLostException e) {
+                        e.printStackTrace();
+                    }
                 }
                 counter += 1;
             }
 
+            else if(match.length == 3 && match[2].getInstruction() instanceof LCMP) {
+                PushInstruction l = (PushInstruction)match[0].getInstruction();
+                PushInstruction r = (PushInstruction)match[1].getInstruction();
+                Instruction op = match[2].getInstruction();
+
+                System.out.println(op);
+
+                Number ln = getVal(l, cpgen);
+                Number rn = getVal(r, cpgen);
+
+                if (ln == null || rn == null) {
+                    continue;
+                }
+
+                Instruction fold = lcmpFold(mg, ln, rn, op);
+                match[0].setInstruction(fold);
+
+                try {
+                    il.delete(match[1], match[2]);
+                }
+                catch (TargetLostException e) {
+                    e.printStackTrace();
+                }
+
+                counter+=1;
+            }
+            else if(match.length == 2 && match[1].getInstruction() instanceof IfInstruction) {
+
+                PushInstruction l = (PushInstruction)match[0].getInstruction();
+                IfInstruction op = (IfInstruction) match[1].getInstruction();
+
+
+                Number ln = getVal(l, cpgen);
+
+                if(ln == null) {
+                    continue;
+                }
+
+                Instruction fold = singleBranchFold(mg, ln, op);
+
+                if(fold instanceof BranchInstruction){
+                    match[1].setInstruction(fold);
+                    try {
+                        il.delete(match[0]);
+                    }
+                    catch (TargetLostException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    match[0].setInstruction(fold);
+                    try {
+                        il.delete(match[1]);
+                    }
+                    catch (TargetLostException e) {
+                        e.printStackTrace();
+                    }
+                }
+                counter+=1;
+            }
 
         }
 
+
         return counter;
     }
+
 
     private static class LoadsInfo {
         InstructionHandle storeInstruction; //like store_1
@@ -181,15 +282,15 @@ public class ConstantFolder {
     }
 
 
-    private void propagation(InstructionList instructionList) {
+    private int propagation(InstructionList instructionList) {
         InstructionFinder instructionFinder = new InstructionFinder(instructionList);
-        String LOAD_REGEX = "ILOAD";
-        String STORE_REGEX = "ISTORE";
+        String LOAD_REGEX = "ILOAD|DLOAD|FLOAD|LLOAD";
+        String STORE_REGEX = "ISTORE|DSTORE|FSTORE|LSTORE";
         String STORE_LOAD_REGEX = LOAD_REGEX + "|" + STORE_REGEX;
 
         Map<Integer, LoadsInfo> storeToLoadsMap = new HashMap<>();
 
-//        ArrayList<InstructionHandle> redundantPushes = new ArrayList<>();
+        final int[] count = {0};
 
         for (Iterator iter = instructionFinder.search(STORE_LOAD_REGEX); iter.hasNext(); ) {
             InstructionHandle instructionHandle = ((InstructionHandle[]) iter.next())[0];
@@ -203,6 +304,7 @@ public class ConstantFolder {
                     //replace all the loads
                     LoadsInfo loadsInfo = storeToLoadsMap.get(index);
                     propagateStoreToLoads(loadsInfo, instructionList);
+                    count[0]++;
                 }
 
                 //creating/replacing/deleting store entry in map
@@ -230,9 +332,10 @@ public class ConstantFolder {
         //EOF
         storeToLoadsMap.forEach((index, loadsInfo) -> {
             propagateStoreToLoads(loadsInfo, instructionList);
+            count[0]++;
         });
 
-
+        return count[0];
     }
 
     private Number getVal(PushInstruction inst, ConstantPoolGen cpgen) {
@@ -331,6 +434,133 @@ public class ConstantFolder {
             inst = new LDC2_W(cpgen.addLong(a.longValue() % b.longValue()));
         }
 
+        return inst;
+    }
+
+    private Instruction branchFold(MethodGen mg, Number a, Number b, Instruction op){
+        ConstantPoolGen cpgen = mg.getConstantPool();
+        Instruction inst = null;
+
+        if (op instanceof IF_ICMPEQ){
+            if(a.intValue() == b.intValue()){
+                inst = new GOTO(((IF_ICMPEQ) op).getTarget());
+            }
+            else{
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IF_ICMPGE){
+            if(a.intValue() >= b.intValue()){
+                inst = new GOTO(((IF_ICMPGE) op).getTarget());
+            }
+            else{
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IF_ICMPGT){
+            if(a.intValue() > b.intValue()){
+                inst = new GOTO(((IF_ICMPGT) op).getTarget());
+            }
+            else{
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IF_ICMPLE){
+            if (a.intValue() <= b.intValue()){
+                inst = new GOTO(((IF_ICMPLE) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IF_ICMPLT){
+            if (a.intValue() < b.intValue()){
+                inst = new GOTO(((IF_ICMPLT) op).getTarget());
+            }
+            else{
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IF_ICMPNE){
+            if (a.intValue() != b.intValue()){
+                inst = new GOTO(((IF_ICMPNE) op).getTarget());
+            }
+            else{
+                inst = new NOP();
+            }
+        }
+
+        return inst;
+    }
+
+    private Instruction lcmpFold(MethodGen mg, Number a, Number b,  Instruction op){
+        ConstantPoolGen cpgen = mg.getConstantPool();
+        Instruction inst = null;
+
+        if(a.longValue() == b.longValue()){
+            inst = new LDC(cpgen.addInteger(0));
+        }
+        if(a.longValue() < b.longValue()){
+            inst = new LDC(cpgen.addInteger(-1));
+        }
+        if(a.longValue() > b.longValue()){
+            inst = new LDC(cpgen.addInteger(1));
+        }
+        return inst;
+    }
+
+    private Instruction singleBranchFold(MethodGen mg, Number a, Instruction op){
+        ConstantPoolGen cpgen = mg.getConstantPool();
+        Instruction inst = null;
+
+        if (op instanceof IFEQ){
+            if(a.intValue() == 0){
+                inst = new GOTO(((IFEQ) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IFGE){
+            if(a.intValue() >= 0){
+                inst = new GOTO(((IFGE) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IFGT){
+            if(a.intValue() > 0){
+                inst = new GOTO(((IFGT) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IFLE){
+            if(a.intValue() <= 0){
+                inst = new GOTO(((IFLE) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IFLT){
+            if(a.intValue() < 0){
+                inst = new GOTO(((IFLT) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
+        else if (op instanceof IFNE){
+            if(a.intValue() != 0){
+                inst = new GOTO(((IFNE) op).getTarget());
+            }
+            else {
+                inst = new NOP();
+            }
+        }
         return inst;
     }
 
