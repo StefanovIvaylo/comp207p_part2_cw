@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 Testsuite: comp207p.target.DynamicVariableFoldingTest
 Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.02 sec
 
@@ -16,3 +17,43 @@ junit.framework.AssertionFailedError: expected:<true[]
 >
 	at comp207p.target.DynamicVariableFoldingTest.testMethodTwoOut(Unknown Source)
 
+=======
+Testsuite: comp207p.target.DynamicVariableFoldingTest
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 0.032 sec
+
+Testcase: testMethodThree took 0.001 sec
+	Caused an ERROR
+(class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+java.lang.VerifyError: (class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+	at comp207p.target.DynamicVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+Testcase: testMethodFour took 0 sec
+	Caused an ERROR
+(class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+java.lang.VerifyError: (class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+	at comp207p.target.DynamicVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+Testcase: testMethodOne took 0 sec
+	Caused an ERROR
+(class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+java.lang.VerifyError: (class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+	at comp207p.target.DynamicVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+Testcase: testMethodTwoReturn took 0 sec
+	Caused an ERROR
+(class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+java.lang.VerifyError: (class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+	at comp207p.target.DynamicVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+Testcase: testMethodTwoOut took 0 sec
+	Caused an ERROR
+(class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+java.lang.VerifyError: (class: comp207p/target/DynamicVariableFolding, method: methodFour signature: ()I) Accessing value from uninitialized register 3
+	at comp207p.target.DynamicVariableFoldingTest.<init>(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+>>>>>>> Stashed changes

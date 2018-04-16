@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 Testsuite: comp207p.target.DynamicVariableFoldingTest
 Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.09 sec
 
@@ -16,3 +17,13 @@ junit.framework.AssertionFailedError: expected:<true[]
 >
 	at comp207p.target.DynamicVariableFoldingTest.testMethodTwoOut(Unknown Source)
 
+=======
+Testsuite: comp207p.target.DynamicVariableFoldingTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 sec
+
+Testcase: testMethodThree took 0.002 sec
+Testcase: testMethodFour took 0.001 sec
+Testcase: testMethodOne took 0 sec
+Testcase: testMethodTwoReturn took 0 sec
+Testcase: testMethodTwoOut took 0.001 sec
+>>>>>>> Stashed changes
