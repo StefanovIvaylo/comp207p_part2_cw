@@ -292,7 +292,7 @@ public class ConstantFolder {
     }
 
     private int unravelLoop(MethodGen mg, InstructionList il) {
-        ConstantPoolGen cpgen = mg.getConstantPool();
+    	ConstantPoolGen cpgen = mg.getConstantPool();
         InstructionFinder f = new InstructionFinder(il);
 
         int counter = 0;
@@ -326,24 +326,32 @@ public class ConstantFolder {
             // having found the target of the jump, find the next instruction along,
             // if it is a branch it is just a conditional, not a comparison
             if (instruction.getTarget().getNext().getInstruction() instanceof BranchInstruction) {
-                Boolean conditionMet = false;
-                while (!conditionMet) {
-                    // adjust the condition that is created until it matches - dummy code
-                    if (0 == 0) {
-                        conditionMet = true;
-                    }
-                    ++iterations;
-                }
+            		//do nothing
             }
 
             // in this case, we need to have both of the variables
             else {
                 // if it is a load instruction, do this, otherwise, do below => ADD THIS
-                Number first = getLoadVal((LoadInstruction) loopStart, cpgen, match, il);
+            		Number first = null;
+            		Number second = null;
+            		if(loopStart instanceof LoadInstruction) {
+            			first = getLoadVal((LoadInstruction) loopStart, cpgen, match, il);
+            		}
+            		else {
+            			PushInstruction firstInst = (PushInstruction) instruction.getTarget().getInstruction();
+            			first = (Number) ((ConstantPushInstruction) firstInst).getValue();
+            		}
+            		
+            		if(instruction.getTarget().getNext().getInstruction() instanceof PushInstruction) {
+            			PushInstruction secondInst = (PushInstruction) instruction.getTarget().getNext().getInstruction();
+            			second = (Number) ((ConstantPushInstruction) secondInst).getValue();
+            		}
+            		else {
+            			second = getLoadVal((LoadInstruction) instruction.getTarget().getNext().getInstruction(), cpgen, match, il);
+            		}
 
                 // vice versa for this one, as above
-                PushInstruction secondInst = (PushInstruction) instruction.getTarget().getNext().getInstruction();
-                Number second = (Number) ((ConstantPushInstruction) secondInst).getValue();
+                
 
 //		   		System.out.println(first + ", " + second + ", " + incrementValue);
 
