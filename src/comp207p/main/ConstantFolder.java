@@ -82,6 +82,8 @@ public class ConstantFolder {
             unravelLoop(methodGen, instructionList);
 
         }
+        
+        removeNops(methodGen, instructionList);
 
         instructionList.setPositions(true);
         methodGen.setMaxStack();
@@ -447,6 +449,23 @@ public class ConstantFolder {
         return n;
     }
 
+    private void removeNops(MethodGen mg, InstructionList il) {
+    		ConstantPoolGen cpgen = mg.getConstantPool();
+        InstructionFinder f = new InstructionFinder(il);
+
+        String regexp = "(NOP)";
+
+        for (Iterator i = f.search(regexp); i.hasNext(); ) {
+        		InstructionHandle[] match = (InstructionHandle[]) i.next();
+            try {
+            		il.delete(match[0]);
+            } catch (TargetLostException e) {
+//          		e.printStackTrace();
+            }
+        }
+
+    }
+    
     private static class LoadsInfo {
         InstructionHandle storeInstruction; //like store_1
         InstructionHandle stored; //like push 70
