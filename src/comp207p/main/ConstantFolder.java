@@ -40,13 +40,13 @@ public class ConstantFolder {
         Method[] methods = cgen.getMethods();
         for (Method method : methods) {
 
-            System.out.println(cgen.getClassName() + " > " + method.getName());
-            System.out.println(new InstructionList(method.getCode().getCode()));
+//            System.out.println(cgen.getClassName() + " > " + method.getName());
+//            System.out.println(new InstructionList(method.getCode().getCode()));
 
             Method improved = improveMethod(method, cgen, cpgen);
 
-            System.out.println(cgen.getClassName() + " > " + method.getName() + " OPTIMISED!!!!");
-            System.out.println(new InstructionList(improved.getCode().getCode()));
+//            System.out.println(cgen.getClassName() + " > " + method.getName() + " OPTIMISED!!!!");
+//            System.out.println(new InstructionList(improved.getCode().getCode()));
 
             cgen.replaceMethod(method, improved);
         }
@@ -189,7 +189,7 @@ public class ConstantFolder {
                 PushInstruction r = (PushInstruction) match[1].getInstruction();
                 Instruction op = match[2].getInstruction();
 
-                System.out.println(op);
+//                System.out.println(op);
 
                 Number ln = getVal(l, cpgen);
                 Number rn = getVal(r, cpgen);
@@ -514,8 +514,8 @@ public class ConstantFolder {
                                 && fromTo[1].getPosition() <= loadPos
                                 && fromTo[1].getPosition() > storePos);
 
-        System.out.println("fromBelowToAboveOrHere: " + fromBelowToAboveOrHere);
-        System.out.println("fromAboveBeforeTheLastStoreToAboveOrHereAfterTheLastStore: " + fromAboveBeforeTheLastStoreToAboveOrHereAfterTheLastStore);
+//        System.out.println("fromBelowToAboveOrHere: " + fromBelowToAboveOrHere);
+//        System.out.println("fromAboveBeforeTheLastStoreToAboveOrHereAfterTheLastStore: " + fromAboveBeforeTheLastStoreToAboveOrHereAfterTheLastStore);
         return fromBelowToAboveOrHere || fromAboveBeforeTheLastStoreToAboveOrHereAfterTheLastStore;
     }
 
@@ -574,22 +574,7 @@ public class ConstantFolder {
                     //delete
                     storeToLoadsMap.remove(index);
                 }
-            } else if (instruction instanceof IINC) {
-                IINC incrementInstruction = (IINC) instruction;
-                int index = incrementInstruction.getIndex();
-
-                //don't delete the previous store
-                //cause we have INC
-//                if (storeToLoadsMap.containsKey(index)) {
-//                    //replace all the loads
-//                    LoadsInfo loadsInfo = storeToLoadsMap.get(index);
-//                    count[0] += propagateStoreToLoads(loadsInfo, instructionList, branches);
-//                }
-
-                //deleting store entry in map, so we don't propagate to loads after increment
-                //i.e we don't optimise IINC
-                storeToLoadsMap.remove(index);
-            } else if (instruction instanceof LoadInstruction) {
+            }  else if (instruction instanceof LoadInstruction) {
                 LoadInstruction loadInstruction = (LoadInstruction) instruction;
                 int index = loadInstruction.getIndex();
 
