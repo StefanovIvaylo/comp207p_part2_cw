@@ -27,7 +27,7 @@ public class ConstantFolder {
             this.original = this.parser.parse();
             this.gen = new ClassGen(this.original);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -63,15 +63,24 @@ public class ConstantFolder {
                 null, method.getName(), cgen.getClassName(), instructionList, cpgen);
 
 
-        for (int i = 0; i < 1; i++) {
-        }
-
+        unravelLoop(methodGen, instructionList);
         int count = 1;
 
         while (count > 0) {
+
+            while (count > 0) {
+                count = 0;
+                count += removeInc(methodGen, instructionList);
+            }
+
             count = 0;
+
+
             count += propagation(instructionList);
             count += simpleFolding(methodGen, instructionList);
+
+            unravelLoop(methodGen, instructionList);
+
         }
 
         instructionList.setPositions(true);
@@ -115,7 +124,7 @@ public class ConstantFolder {
                     moveBranchesFromTo(match[2], match[0]);
                     il.delete(match[1], match[2]);
                 } catch (TargetLostException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
 
                 counter += 1;
@@ -138,7 +147,7 @@ public class ConstantFolder {
                     moveBranchesFromTo(match[1], match[0]);
                     il.delete(match[1]);
                 } catch (TargetLostException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
                 counter += 1;
             } else if (match.length == 3 && match[2].getInstruction() instanceof IfInstruction) {
@@ -162,7 +171,7 @@ public class ConstantFolder {
                         moveBranchesFromTo(match[1], match[2]);
                         il.delete(match[0], match[1]);
                     } catch (TargetLostException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                 } else {
                     match[0].setInstruction(fold);
@@ -171,7 +180,7 @@ public class ConstantFolder {
                         moveBranchesFromTo(match[2], match[0]);
                         il.delete(match[1], match[2]);
                     } catch (TargetLostException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                 }
                 counter += 1;
@@ -197,7 +206,7 @@ public class ConstantFolder {
                     moveBranchesFromTo(match[2], match[0]);
                     il.delete(match[1], match[2]);
                 } catch (TargetLostException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
 
                 counter += 1;
@@ -221,7 +230,7 @@ public class ConstantFolder {
                         moveBranchesFromTo(match[0], match[1]);
                         il.delete(match[0]);
                     } catch (TargetLostException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                 } else {
                     match[0].setInstruction(fold);
@@ -229,18 +238,214 @@ public class ConstantFolder {
                         moveBranchesFromTo(match[1], match[0]);
                         il.delete(match[1]);
                     } catch (TargetLostException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                 }
                 counter += 1;
             }
-
         }
 
 
         return counter;
     }
 
+    private int removeInc(MethodGen mg, InstructionList il) {
+        int counting = 0;
+
+        ConstantPoolGen cpgen = mg.getConstantPool();
+        InstructionFinder f = new InstructionFinder(il);
+
+        String regexp = "(IINC)";
+        for (Iterator i = f.search(regexp); i.hasNext(); ) {
+
+            InstructionHandle[] match = (InstructionHandle[]) i.next();
+
+            int incrementValue = ((IINC) match[0].getInstruction()).getIncrement();
+
+            Number n = null;
+            int requiredIndex = ((LocalVariableInstruction) match[0].getInstruction()).getIndex();
+            InstructionHandle l = match[0].getPrev();
+
+            while (l != null) {
+                if (l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
+                    if (l.getPrev().getInstruction() instanceof PushInstruction) {
+                        n = getLoadVal((PushInstruction) l.getPrev().getInstruction(), cpgen, match, il);
+                        break;
+                    }
+                }
+                l = l.getPrev();
+            }
+
+            Instruction newInst = new LDC(cpgen.addInteger(n.intValue() + incrementValue));
+            Instruction newStore = new ISTORE(3);
+            counting += 1;
+//			System.out.println(n.intValue());
+
+//			System.out.println(((LDC) newInst).getValue(cpgen));
+
+//			System.out.println(newInst + ", " + newStore);
+            match[0].setInstruction(newStore);
+            il.insert(match[0], newInst);
+            break;
+        }
+        return counting;
+    }
+
+    private int unravelLoop(MethodGen mg, InstructionList il) {
+        ConstantPoolGen cpgen = mg.getConstantPool();
+        InstructionFinder f = new InstructionFinder(il);
+
+        int counter = 0;
+        Number incrementValue;
+        LocalVariableInstruction increment;
+        GotoInstruction instruction;
+        Instruction loopStart;
+
+        InstructionHandle deleteMe;
+
+        // if we make sure that the goto is always going to a lower index, 
+        // we can guarantee that it is indeed a loop
+        String regexp = "(LocalVariableInstruction) (GotoInstruction)";
+        for (Iterator i = f.search(regexp); i.hasNext(); ) {
+            InstructionHandle[] match = (InstructionHandle[]) i.next();
+//            System.out.println(match[0]);
+//            System.out.println(match[1]);
+
+            increment = (LocalVariableInstruction) match[0].getInstruction();
+            incrementValue = ((IINC) increment).getIncrement();
+
+            deleteMe = match[1];
+
+            instruction = (GotoInstruction) match[1].getInstruction();
+//           System.out.println(instruction);
+            loopStart = instruction.getTarget().getInstruction();
+//           System.out.println(loopStart);
+
+            int iterations = 0;
+
+            // having found the target of the jump, find the next instruction along,
+            // if it is a branch it is just a conditional, not a comparison
+            if (instruction.getTarget().getNext().getInstruction() instanceof BranchInstruction) {
+                Boolean conditionMet = false;
+                while (!conditionMet) {
+                    // adjust the condition that is created until it matches - dummy code
+                    if (0 == 0) {
+                        conditionMet = true;
+                    }
+                    ++iterations;
+                }
+            }
+
+            // in this case, we need to have both of the variables
+            else {
+                // if it is a load instruction, do this, otherwise, do below => ADD THIS
+                Number first = getLoadVal((LoadInstruction) loopStart, cpgen, match, il);
+
+                // vice versa for this one, as above
+                PushInstruction secondInst = (PushInstruction) instruction.getTarget().getNext().getInstruction();
+                Number second = (Number) ((ConstantPushInstruction) secondInst).getValue();
+
+//		   		System.out.println(first + ", " + second + ", " + incrementValue);
+
+                double firstVal = first.doubleValue();
+                double secondVal = second.doubleValue();
+                double incrementVal = incrementValue.doubleValue();
+
+                // perform iterations for the different equalities
+                if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPLT) {
+                    while (!(firstVal < secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                } else if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPLE) {
+                    while (!(firstVal <= secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                } else if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPEQ) {
+                    while (!(firstVal == secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                } else if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPGE) {
+//		   			System.out.println("made it");
+                    while (!(firstVal >= secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                } else if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPGT) {
+                    while (!(firstVal > secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                } else if (instruction.getTarget().getNext().getNext().getInstruction() instanceof IF_ICMPNE) {
+                    while (!(firstVal != secondVal)) {
+                        firstVal += incrementVal;
+                        ++iterations;
+                    }
+                }
+
+//				System.out.println(iterations);
+                ArrayList<InstructionHandle> repeatBlock = new ArrayList<InstructionHandle>();
+
+                // loop body start
+                InstructionHandle k = instruction.getTarget().getNext().getNext().getNext();
+                while (!(k.getInstruction() instanceof GotoInstruction)) {
+                    repeatBlock.add(k);
+                    k = k.getNext();
+                }
+//			    System.out.println(repeatBlock);
+
+                for (int l = 1; l < iterations; l++) {
+                    InstructionHandle lastInsert = instruction.getTarget().getNext().getNext().getNext();
+                    for (int j = repeatBlock.size() - 1; j >= 0; j--) {
+                        lastInsert = il.insert(lastInsert, repeatBlock.get(j).getInstruction());
+                    }
+                }
+
+                try {
+                    il.delete(instruction.getTarget().getNext().getNext());
+                    il.delete(instruction.getTarget().getNext());
+                    il.delete(instruction.getTarget());
+                } catch (TargetLostException e) {
+                }
+                try {
+                    il.delete(deleteMe);
+                } catch (TargetLostException e) {
+                }
+
+//			    System.out.println(il);
+                break;
+            }
+        }
+        return counter;
+    }
+
+    private Number getLoadVal(PushInstruction inst, ConstantPoolGen cpgen, InstructionHandle[] match, InstructionList il) {
+        Number n = null;
+        if (inst instanceof LDC) {
+            n = (Number) ((LDC) inst).getValue(cpgen);
+        } else if (inst instanceof LDC_W) {
+            n = (Number) ((LDC_W) inst).getValue(cpgen);
+        } else if (inst instanceof LDC2_W) {
+            n = (Number) ((LDC2_W) inst).getValue(cpgen);
+        } else if (inst instanceof ConstantPushInstruction) {
+            n = (Number) ((ConstantPushInstruction) inst).getValue();
+        } else if (inst instanceof LoadInstruction) {
+            int requiredIndex = ((LoadInstruction) inst).getIndex();
+            InstructionHandle l = match[0].getPrev();
+            while (l != null) {
+                if (l.getInstruction() instanceof StoreInstruction && ((StoreInstruction) l.getInstruction()).getIndex() == requiredIndex) {
+                    if (l.getPrev().getInstruction() instanceof PushInstruction) {
+                        n = getLoadVal((PushInstruction) l.getPrev().getInstruction(), cpgen, match, il);
+                        return n;
+                    }
+                }
+                l = l.getPrev();
+            }
+        }
+        return n;
+    }
 
     private static class LoadsInfo {
         InstructionHandle storeInstruction; //like store_1
@@ -373,11 +578,13 @@ public class ConstantFolder {
                 IINC incrementInstruction = (IINC) instruction;
                 int index = incrementInstruction.getIndex();
 
-                if (storeToLoadsMap.containsKey(index)) {
-                    //replace all the loads
-                    LoadsInfo loadsInfo = storeToLoadsMap.get(index);
-                    count[0] += propagateStoreToLoads(loadsInfo, instructionList, branches);
-                }
+                //don't delete the previous store
+                //cause we have INC
+//                if (storeToLoadsMap.containsKey(index)) {
+//                    //replace all the loads
+//                    LoadsInfo loadsInfo = storeToLoadsMap.get(index);
+//                    count[0] += propagateStoreToLoads(loadsInfo, instructionList, branches);
+//                }
 
                 //deleting store entry in map, so we don't propagate to loads after increment
                 //i.e we don't optimise IINC
@@ -623,10 +830,10 @@ public class ConstantFolder {
             this.optimized.dump(out);
         } catch (FileNotFoundException e) {
             // Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (IOException e) {
             // Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 }
